@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saloon Pro - Premium Hair Salon Management</title>
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <!-- Phosphor Icons (for clean, modern iconography) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="dark-theme">
+    <!-- Login Screen Overlay -->
+    <div id="login-screen" style="display:none; position:fixed; inset:0; background:var(--bg-primary); z-index:9999; align-items:center; justify-content:center; background-image: radial-gradient(circle at center, rgba(229, 165, 93, 0.08) 0%, var(--bg-primary) 80%);">
+        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:40px; width:100%; max-width:400px; box-shadow:var(--shadow-lg); text-align:center; backdrop-filter:var(--blur-xl);">
+            <div style="display:inline-flex; align-items:center; gap:12px; margin-bottom:32px;">
+                <i class="ph ph-scissors" style="font-size:32px; color:var(--accent-gold);"></i>
+                <h2 style="font-family:var(--font-heading); font-size:28px; margin:0;">Saloon<span style="color:var(--accent-gold); font-weight:400; font-style:italic;">Pro</span></h2>
+            </div>
+            <h3 style="margin-bottom:24px; font-weight:500; font-size:18px; color:var(--text-secondary);">Staff Portal Login</h3>
+            <form id="login-form" style="text-align:left;">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:13px; color:var(--text-secondary);">Username</label>
+                    <input type="text" id="login-username" required style="width:100%; padding:12px 16px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+                <div style="margin-bottom:24px;">
+                    <label style="display:block; margin-bottom:8px; font-size:13px; color:var(--text-secondary);">Password</label>
+                    <input type="password" id="login-password" required style="width:100%; padding:12px 16px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+                <div id="login-error" style="color:var(--danger); font-size:13px; margin-bottom:16px; display:none; text-align:center;"></div>
+                <button type="submit" class="btn btn-primary" id="btn-login-submit" style="width:100%; padding:14px; text-transform:uppercase; letter-spacing:1px;">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="app" class="app-layout" style="display:none;">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <i class="ph ph-scissors brand-icon"></i>
+                <h1>Saloon<span>Pro</span></h1>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="ph ph-squares-four"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="appointments">
+                    <i class="ph ph-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="#" class="nav-item" data-page="clients">
+                    <i class="ph ph-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="#" class="nav-item" data-page="services">
+                    <i class="ph ph-sparkle"></i>
+                    <span>Services</span>
+                </a>
+                <a href="#" class="nav-item" data-page="staff" id="nav-staff">
+                    <i class="ph ph-user-circle-gear"></i>
+                    <span>Staff</span>
+                </a>
+                <a href="#" class="nav-item" data-page="checkout">
+                    <i class="ph ph-shopping-cart"></i>
+                    <span>POS Checkout</span>
+                </a>
+                <a href="#" class="nav-item" data-page="inventory">
+                    <i class="ph ph-package"></i>
+                    <span>Inventory</span>
+                </a>
+                <a href="#" class="nav-item" data-page="expenses">
+                    <i class="ph ph-wallet"></i>
+                    <span>Expenses</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reconciliation">
+                    <i class="ph ph-vault"></i>
+                    <span>Drawer Close</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                    <i class="ph ph-moon"></i>
+                </button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=1c1c1c&color=e5a55d" alt="Admin"
+                        class="avatar" id="user-avatar">
+                    <div class="user-info">
+                        <span class="user-name" id="user-display-name">Manager</span>
+                        <span class="user-role" id="user-display-role">Admin</span>
+                    </div>
+                </div>
+                <button class="btn" id="btn-logout" style="width:100%; margin-top:8px; background:rgba(248,113,113,0.1); color:var(--danger); border:1px solid rgba(248,113,113,0.2); font-weight:600;">
+                    <i class="ph ph-sign-out"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="topbar">
+                <h2 id="page-title">Overview</h2>
+                <div class="topbar-actions">
+                    <button class="btn btn-primary" id="btn-new-appointment">
+                        <i class="ph ph-plus"></i>
+                        New Appointment
+                    </button>
+                    <button class="btn-icon">
+                        <i class="ph ph-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <div id="page-container" class="page-container">
+                <!-- Pages will be dynamically injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Service Modal -->
+    <div id="add-service-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0;">Add New Service</h3>
+                <button type="button" class="btn-icon" id="close-service-modal" style="width:32px; height:32px;"><i
+                        class="ph ph-x"></i></button>
+            </div>
+
+            <form id="add-service-form">
+                <div style="margin-bottom:16px;">
+                    <label
+                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Service
+                        Name</label>
+                    <input type="text" id="s-name" required
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label
+                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
+                    <textarea id="s-desc" rows="2"
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div>
+                        <label
+                            style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Duration
+                            (mins)</label>
+                        <input type="number" id="s-duration" required min="15" step="15"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label
+                            style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Price
+                            ($)</label>
+                        <input type="number" id="s-price" required min="0" step="0.01"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <label
+                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
+                    <select id="s-category" required
+                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                        <option value="Haircuts & Styling">Haircuts & Styling</option>
+                        <option value="Color & Highlights">Color & Highlights</option>
+                        <option value="Treatments">Treatments</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" class="btn" id="cancel-service-modal"
+                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-service-btn">Save Service</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Service Modal -->
+    <div id="edit-service-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0;">Edit Service</h3>
+                <button type="button" class="btn-icon" id="close-edit-service-modal" style="width:32px; height:32px;"><i
+                        class="ph ph-x"></i></button>
+            </div>
+
+            <form id="edit-service-form">
+                <input type="hidden" id="edit-service-id">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Service Name</label>
+                    <input type="text" id="edit-s-name" required
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
+                    <textarea id="edit-s-desc" rows="2"
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Duration (mins)</label>
+                        <input type="number" id="edit-s-duration" required min="15" step="15"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Price ($)</label>
+                        <input type="number" id="edit-s-price" required min="0" step="0.01"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
+                    <select id="edit-s-category" required
+                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                        <option value="Haircuts & Styling">Haircuts & Styling</option>
+                        <option value="Color & Highlights">Color & Highlights</option>
+                        <option value="Treatments">Treatments</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" class="btn" id="cancel-edit-service-modal"
+                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-edit-service-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div id="add-staff-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0;">Add New Staff Member</h3>
+                <button type="button" class="btn-icon" id="close-staff-modal" style="width:32px; height:32px;"><i
+                        class="ph ph-x"></i></button>
+            </div>
+
+            <form id="add-staff-form">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Full
+                        Name</label>
+                    <input type="text" id="staff-name" required
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Role /
+                        Title</label>
+                    <input type="text" id="staff-role" required placeholder="e.g. Master Stylist"
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <label
+                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Specializations
+                        (comma separated)</label>
+                    <input type="text" id="staff-specializations" placeholder="e.g. Balayage, Precision Cuts"
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" class="btn" id="cancel-staff-modal"
+                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-staff-btn">Add Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Staff Modal -->
+    <div id="edit-staff-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0;">Edit Staff Member</h3>
+                <button type="button" class="btn-icon" id="close-edit-staff-modal" style="width:32px; height:32px;"><i
+                        class="ph ph-x"></i></button>
+            </div>
+
+            <form id="edit-staff-form">
+                <input type="hidden" id="edit-staff-id">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Full Name</label>
+                    <input type="text" id="edit-staff-name" required
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Portal Account Credentials</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                        <input type="text" id="edit-staff-username" required placeholder="Username" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                        <input type="password" id="edit-staff-pwd" placeholder="New Password (optional)" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom:16px;" id="edit-staff-comm-section">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Commission Configuration</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                        <input type="number" id="edit-staff-comm-rate" placeholder="Commission Rate" step="0.1" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                        <select id="edit-staff-comm-type" style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                            <option value="percentage">Percentage (%)</option>
+                            <option value="fixed">Fixed ($)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:24px;" id="edit-staff-specs-section">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Specializations (comma separated)</label>
+                    <input type="text" id="edit-staff-specializations" placeholder="e.g. Balayage, Precision Cuts"
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" class="btn" id="cancel-edit-staff-modal"
+                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-edit-staff-btn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Appointment Modal -->
+    <div id="new-appointment-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0;">Create Appointment</h3>
+                <button type="button" class="btn-icon" id="close-appointment-modal" style="width:32px; height:32px;"><i
+                        class="ph ph-x"></i></button>
+            </div>
+
+            <form id="new-appointment-form">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Client Name</label>
+                    <input type="text" id="apt-client-name" required
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Client Email</label>
+                        <input type="email" id="apt-client-email"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Client Phone</label>
+                        <input type="text" id="apt-client-phone" required
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Service</label>
+                        <select id="apt-service-id" required
+                            style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;"></select>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Stylist</label>
+                        <select id="apt-staff-id" required
+                            style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;"></select>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Date</label>
+                        <input type="date" id="apt-date" required
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Time</label>
+                        <input type="time" id="apt-time" required
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Booking Type</label>
+                    <select id="apt-client-type" required
+                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                        <option value="pre-booked">Pre-booked</option>
+                        <option value="walk-in">Walk-in</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" class="btn" id="cancel-appointment-modal"
+                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-appointment-btn">Save Appointment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div id="add-product-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0;">Add New Product</h3>
+                <button type="button" class="btn-icon" id="close-product-modal" style="width:32px; height:32px;"><i
+                        class="ph ph-x"></i></button>
+            </div>
+
+            <form id="add-product-form">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Product Name</label>
+                    <input type="text" id="p-name" required
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
+                    <textarea id="p-desc" rows="2"
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Price ($)</label>
+                        <input type="number" id="p-price" required min="0" step="0.01"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Initial Stock</label>
+                        <input type="number" id="p-stock" required min="0" step="0.1"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
+                        <select id="p-category" required
+                            style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                            <option value="retail_sale">Retail Sale</option>
+                            <option value="salon_consumption">Salon Consumption</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Min Stock Alert</label>
+                        <input type="number" id="p-min-alert" required min="0" step="1"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" class="btn" id="cancel-product-modal"
+                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-product-btn">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Log Expense Modal -->
+    <div id="add-expense-modal"
+        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
+        <div
+            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                <h3 style="margin:0;">Log Expense</h3>
+                <button type="button" class="btn-icon" id="close-expense-modal" style="width:32px; height:32px;"><i
+                        class="ph ph-x"></i></button>
+            </div>
+
+            <form id="add-expense-form">
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
+                    <select id="exp-category" required
+                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                        <option value="Rent">Rent</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Salon Supplies">Salon Supplies</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Salaries">Salaries</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Amount ($)</label>
+                        <input type="number" id="exp-amount" required min="0.01" step="0.01"
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Expense Date</label>
+                        <input type="date" id="exp-date" required
+                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
+                    <textarea id="exp-desc" rows="2" placeholder="Describe the logged expense..."
+                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" class="btn" id="cancel-expense-modal"
+                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-expense-btn">Log Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js?v=2"></script>
+</body>
+
+</html>

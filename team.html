@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet The Team | Saloon Pro</title>
+
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #242424;
+            --bg-glass: rgba(26, 26, 26, 0.7);
+
+            --accent-gold: #D4AF37;
+            --accent-gold-light: #F4D03F;
+            --accent-gold-dark: #AA8B2C;
+
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #808080;
+
+            --border-color: #333333;
+            --border-light: rgba(255, 255, 255, 0.1);
+
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Outfit', sans-serif;
+
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            --blur: blur(12px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            background-image: radial-gradient(circle at top center, rgba(212, 175, 55, 0.08) 0%, var(--bg-primary) 70%);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            font-weight: 400;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* Header Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 5%;
+            z-index: 1000;
+            transition: var(--transition);
+            background: var(--bg-glass);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border-light);
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            font-weight: 400;
+        }
+
+        .brand span {
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--accent-gold);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--accent-gold);
+        }
+
+        /* Hero Page Title */
+        .hero-banner {
+            padding: 180px 20px 60px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-banner h1 {
+            font-size: 4.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(45deg, #fff, var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-banner p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        /* Team Grid Section */
+        .team-section {
+            padding: 40px 0 100px;
+            flex: 1;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        /* Stylist Card */
+        .team-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 40px 30px;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+        }
+
+        .avatar-container {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .team-card:hover .team-avatar {
+            border-color: var(--accent-gold);
+        }
+
+        /* Availability Indicator Badge */
+        .status-badge {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-tertiary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 2px solid var(--bg-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-available { color: var(--success); }
+        .status-available .status-dot { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
+
+        .status-in_service { color: var(--warning); }
+        .status-in_service .status-dot { background-color: var(--warning); box-shadow: 0 0 8px var(--warning); }
+
+        .status-off { color: var(--text-muted); }
+        .status-off .status-dot { background-color: var(--text-muted); }
+
+        .stylist-name {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .stylist-role {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        /* Specializations Tags */
+        .specs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 30px;
+            min-height: 50px;
+        }
+
+        .spec-tag {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* CTA Button */
+        .btn-book {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: auto;
+        }
+
+        .btn-book:hover {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: #111;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #0a0a0a;
+            padding: 80px 5% 30px;
+            border-top: 1px solid var(--border-light);
+            margin-top: auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            margin-top: 20px;
+            max-width: 300px;
+        }
+
+        .footer-heading {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--accent-gold);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-bottom {
+            padding-top: 30px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero-banner h1 { font-size: 3.5rem; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-banner h1 { font-size: 3rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="brand">
+                <i class="ph ph-scissors"></i>
+                Saloon<span>Pro</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="index.html#services" class="nav-link">Services</a>
+                <a href="index.html#booking-section" class="nav-link" style="color: var(--accent-gold);">Book Online</a>
+                <a href="team.html" class="nav-link active">Our Team</a>
+                <a href="admin.html" class="nav-link">Staff Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-banner">
+        <h1>Meet Our Specialists.</h1>
+        <p>Our team of master stylists and hair therapists undergo continuous training to deliver premium care, artistic styling, and beautiful transformations.</p>
+    </section>
+
+    <!-- Team Grid Section -->
+    <section class="team-section">
+        <div class="container">
+            <div id="team-grid" class="team-grid">
+                <!-- Dynamically loaded from API -->
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted);">
+                    <i class="ph ph-spinner ph-spin" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                    <p>Loading our master team...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="brand">
+                        <i class="ph ph-scissors"></i>
+                        Saloon<span>Pro</span>
+                    </a>
+                    <p>Elevating personal style through exceptional artistry and premium salon experiences.</p>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Contact Us</h4>
+                    <ul class="footer-links">
+                        <li><i class="ph ph-map-pin"></i> 123 Elegance Avenue, NY 10012</li>
+                        <li><i class="ph ph-phone"></i> +1 (555) 123-4567</li>
+                        <li><i class="ph ph-envelope"></i> hello@saloonpro.com</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-heading">Hours</h4>
+                    <ul class="footer-links">
+                        <li>Mon - Fri: 9:00 AM - 8:00 PM</li>
+                        <li>Saturday: 9:00 AM - 6:00 PM</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Saloon Pro. All rights reserved.</p>
+                <div style="display: flex; gap: 15px; font-size: 1.5rem;">
+                    <a href="#"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="#"><i class="ph ph-facebook-logo"></i></a>
+                    <a href="#"><i class="ph ph-tiktok-logo"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000/api/endpoints.php?action=';
+
+        async function loadTeam() {
+            try {
+                const res = await fetch(`${API_BASE_URL}staff`);
+                const staffList = await res.json();
+                
+                const grid = document.getElementById('team-grid');
+                if (!grid) return;
+
+                if (staffList.length === 0) {
+                    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--text-secondary);">No stylists found.</div>';
+                    return;
+                }
+
+                grid.innerHTML = staffList.map(st => {
+                    // Availability Status styling details
+                    let statusLabel = 'Available';
+                    let statusClass = 'status-available';
+                    
+                    if (st.status === 'in_service') {
+                        statusLabel = 'Busy';
+                        statusClass = 'status-in_service';
+                    } else if (st.status === 'off') {
+                        statusLabel = 'Off Duty';
+                        statusClass = 'status-off';
+                    }
+
+                    // Parse specializations tags
+                    const specs = st.specializations ? st.specializations.split(',').map(s => s.trim()) : [];
+                    const specsHTML = specs.map(sp => `<span class="spec-tag">${sp}</span>`).join('');
+
+                    return `
+                        <div class="team-card">
+                            <div class="avatar-container">
+                                <img class="team-avatar" src="https://ui-avatars.com/api/?name=${encodeURIComponent(st.name)}&background=random&size=120" alt="${st.name}">
+                                <div class="status-badge ${statusClass}">
+                                    <div class="status-dot"></div>
+                                    <span>${statusLabel}</span>
+                                </div>
+                            </div>
+                            <h3 class="stylist-name">${st.name}</h3>
+                            <div class="stylist-role">${st.role}</div>
+                            <div class="specs-container">
+                                ${specsHTML}
+                            </div>
+                            <button onclick="bookWithStylist(${st.id})" class="btn-book">Book Appointment</button>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error("Failed to load staff details:", e);
+                const grid = document.getElementById('team-grid');
+                if (grid) {
+                    grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--danger);">Failed to load team database. Please try again.</div>';
+                }
+            }
+        }
+
+        function bookWithStylist(id) {
+            // Redirect to homepage with staff_id query param
+            window.location.href = `index.html?staff_id=${id}`;
+        }
+
+        // Initialize loading
+        loadTeam();
+    </script>
+</body>
+
+</html>
