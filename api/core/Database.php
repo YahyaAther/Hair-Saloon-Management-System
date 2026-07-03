@@ -6,7 +6,7 @@ class Database {
 
     public static function getConnection() {
         if (self::$pdo === null) {
-            $db_file = 'C:/Users/HP/Downloads/saloon.db';
+            $db_file = getenv('DB_PATH') ?: __DIR__ . '/../../saloon.db';
             $is_new_db = !file_exists($db_file);
             
             try {
