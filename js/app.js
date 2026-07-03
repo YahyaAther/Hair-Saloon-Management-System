@@ -1,5 +1,7 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:8000/api/index.php?action=';
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:8000/api/index.php?action='
+  : '/api/index.php?action=';
 
 // Session State
 let currentUser = null;
