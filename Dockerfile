@@ -9,10 +9,10 @@ RUN docker-php-ext-install pdo pdo_sqlite
 # Enable mod_rewrite
 RUN a2enmod rewrite
 
-# Fix AllowOverride in apache2.conf (covers <Directory /var/www/>)
+# Fix AllowOverride so .htaccess works
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
-# Add explicit block for /var/www/html with AllowOverride All
+# Add explicit Directory block for /var/www/html
 RUN { \
     echo '<Directory /var/www/html>'; \
     echo '  Options -Indexes +FollowSymLinks'; \
@@ -28,10 +28,14 @@ COPY . /var/www/html/
 # Remove local Windows binaries
 RUN rm -rf /var/www/html/mariadb-10.11.7-winx64
 
-# Permissions — www-data needs write access to create the SQLite DB
+# Make startup script executable
+RUN chmod +x /var/www/html/start.sh
+
+# Permissions — www-data needs write access to create SQLite DB
 RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
-    && find /var/www/html -type f -exec chmod 644 {} \;
+    && find /var/www/html -type f -exec chmod 644 {} \; \
+    && chmod +x /var/www/html/start.sh
 
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["/var/www/html/start.sh"]
