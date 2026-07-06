@@ -17,6 +17,17 @@
   @keyframes lumRise{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
   .chip{text-align:center;cursor:pointer;font-family:'Hanken Grotesk',sans-serif;border-radius:3px;transition:all .25s;background:rgba(13,11,9,.4);border:1px solid rgba(217,177,137,.16);}
   .chip.active{background:rgba(217,177,137,.16);border-color:rgba(217,177,137,.7);}
+  .book-main{display:grid;grid-template-columns:1fr 1.1fr;gap:7vw;align-items:start;}
+  @media(max-width:900px){
+    .book-main{grid-template-columns:1fr;gap:40px;}
+    .book-main > div:first-child{position:static!important;}
+    header{padding:20px 5vw;}
+  }
+  @media(max-width:600px){
+    .book-form-grid{grid-template-columns:1fr!important;}
+    .book-form-grid-2{grid-template-columns:1fr!important;}
+    .book-panel{padding:28px 20px!important;}
+  }
 </style>
 </head>
 <body>
@@ -30,7 +41,7 @@
     <a href="index.html" style="font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:#bcae9c;text-decoration:none;">← Back to atelier</a>
   </header>
 
-  <main style="position:relative;z-index:10;max-width:1180px;margin:0 auto;padding:18vh 6vw 12vh;display:grid;grid-template-columns:1fr 1.1fr;gap:7vw;align-items:start;">
+  <main class="book-main" style="position:relative;z-index:10;max-width:1180px;margin:0 auto;padding:18vh 6vw 12vh;">
 
     <!-- Left info panel -->
     <div style="position:sticky;top:18vh;">
@@ -45,7 +56,7 @@
     </div>
 
     <!-- Right booking form -->
-    <div style="background:rgba(24,19,15,.6);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(217,177,137,.18);border-radius:6px;padding:48px 44px;">
+    <div class="book-panel" style="background:rgba(24,19,15,.6);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(217,177,137,.18);border-radius:6px;padding:48px 44px;">
 
       <!-- Confirmation state -->
       <div id="confirm-panel" style="display:none;text-align:center;padding:40px 0;animation:lumRise .8s ease;">
@@ -67,7 +78,7 @@
         <div id="stylist-chips" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
 
         <!-- Date & Time -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px;">
+        <div class="book-form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px;">
           <div>
             <label style="display:block;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#c9956b;margin-bottom:12px;">Date</label>
             <input id="input-date" type="date" style="width:100%;background:rgba(13,11,9,.5);border:1px solid rgba(217,177,137,.22);border-radius:3px;padding:14px 16px;color:#efe7da;font-family:'Hanken Grotesk',sans-serif;font-size:.95rem;color-scheme:dark;">
@@ -79,7 +90,7 @@
         </div>
 
         <!-- Name & Phone -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px;">
+        <div class="book-form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px;">
           <div>
             <label style="display:block;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#c9956b;margin-bottom:12px;">Name</label>
             <input id="input-name" placeholder="Your name" style="width:100%;background:rgba(13,11,9,.5);border:1px solid rgba(217,177,137,.22);border-radius:3px;padding:14px 16px;color:#efe7da;font-family:'Hanken Grotesk',sans-serif;font-size:.95rem;">
@@ -88,6 +99,12 @@
             <label style="display:block;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#c9956b;margin-bottom:12px;">Phone</label>
             <input id="input-phone" placeholder="+1 …" style="width:100%;background:rgba(13,11,9,.5);border:1px solid rgba(217,177,137,.22);border-radius:3px;padding:14px 16px;color:#efe7da;font-family:'Hanken Grotesk',sans-serif;font-size:.95rem;">
           </div>
+        </div>
+
+        <!-- Email -->
+        <div style="margin-top:18px;">
+          <label style="display:block;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:#c9956b;margin-bottom:12px;">Email <span style="color:#7a6e5c;text-transform:none;letter-spacing:0;">(optional)</span></label>
+          <input id="input-email" type="email" placeholder="you@example.com" style="width:100%;background:rgba(13,11,9,.5);border:1px solid rgba(217,177,137,.22);border-radius:3px;padding:14px 16px;color:#efe7da;font-family:'Hanken Grotesk',sans-serif;font-size:.95rem;">
         </div>
 
         <!-- Notes -->
@@ -200,6 +217,9 @@ function renderTimeChips() {
 }
 
 async function init() {
+  // Set minimum date to today
+  document.getElementById('input-date').min = new Date().toISOString().split('T')[0];
+
   state.services = await loadServices();
   state.staff = await loadStaff();
   if (state.services.length) {
@@ -214,6 +234,7 @@ async function init() {
 window.submitForm = async function() {
   const name = document.getElementById('input-name').value.trim();
   const phone = document.getElementById('input-phone').value.trim();
+  const email = document.getElementById('input-email').value.trim();
   const date = document.getElementById('input-date').value;
   const notes = document.getElementById('input-notes').value.trim();
   const errEl = document.getElementById('form-error');
@@ -248,6 +269,7 @@ window.submitForm = async function() {
       body: JSON.stringify({
         client_name: name,
         client_phone: phone,
+        client_email: email,
         staff_id: staffId,
         service_id: state.serviceId,
         date: date,
@@ -279,6 +301,7 @@ window.resetForm = function() {
   state.staffId = null; state.staffName = 'First available';
   document.getElementById('input-name').value = '';
   document.getElementById('input-phone').value = '';
+  document.getElementById('input-email').value = '';
   document.getElementById('input-date').value = '';
   document.getElementById('input-notes').value = '';
   document.getElementById('form-error').style.display = 'none';

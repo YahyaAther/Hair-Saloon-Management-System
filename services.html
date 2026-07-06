@@ -15,6 +15,13 @@
   @keyframes lumRise{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
   .lum-reveal{opacity:0;}
   .lum-reveal.in{animation:lumRise 1.1s cubic-bezier(.16,.84,.44,1) forwards;}
+  @media(max-width:768px){
+    header{padding:20px 5vw;}
+    header nav{gap:18px;}
+    header nav a{font-size:.62rem;letter-spacing:.14em;}
+    #services-list > div{grid-template-columns:1fr!important;gap:16px!important;text-align:left;}
+    #services-list > div > div:last-child{text-align:left;}
+  }
 </style>
 </head>
 <body>
