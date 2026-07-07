@@ -29,8 +29,8 @@ RUN { \
 # Copy project files
 COPY . /var/www/html/
 
-# Remove local Windows binaries and bat files
-RUN rm -rf /var/www/html/mariadb-10.11.7-winx64 /var/www/html/start.bat
+# Remove local Windows files and old start script (not needed inside container)
+RUN rm -rf /var/www/html/mariadb-10.11.7-winx64 /var/www/html/start.bat /var/www/html/start.sh
 
 # Create the startup script INSIDE Docker (avoids Windows CRLF line-ending crash)
 RUN printf '#!/bin/sh\n\
