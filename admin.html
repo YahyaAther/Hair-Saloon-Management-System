@@ -1,540 +1,952 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saloon Pro - Premium Hair Salon Management</title>
-    <!-- Modern Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
-        rel="stylesheet">
-    <!-- Phosphor Icons (for clean, modern iconography) -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="css/styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumière — Staff Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;}
+body{font-family:'Instrument Sans',-apple-system,sans-serif;background:#F6F4F0;color:#1C1917;-webkit-font-smoothing:antialiased;font-size:14px;}
+*{box-sizing:border-box;}
+a{color:#B4530A;text-decoration:none;}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#D8D2C8;border-radius:5px;border:2px solid #F6F4F0}
+::-webkit-scrollbar-track{background:transparent}
+input::placeholder,textarea::placeholder{color:#A8A29E}
+input,select,textarea{font-family:'Instrument Sans',-apple-system,sans-serif;}
+/* Login */
+#login-overlay{position:fixed;inset:0;background:#F6F4F0;z-index:9999;display:flex;align-items:center;justify-content:center;}
+#login-box{background:#fff;border:1px solid #E7E2DA;border-radius:16px;padding:40px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(28,25,23,0.12);}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.login-logo-icon{background:#B4530A;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.login-logo h1{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em;}
+.login-label{display:block;font-size:12.5px;font-weight:600;color:#44403C;margin-bottom:4px;}
+.login-input{width:100%;padding:10px 12px;border:1px solid #E7E2DA;background:#F6F4F0;border-radius:8px;font-size:13px;outline:none;color:#1C1917;}
+.login-input:focus{border-color:#B4530A;background:#fff;}
+#login-error{color:#B3261E;font-size:12.5px;margin-bottom:12px;display:none;}
+.btn-login{width:100%;background:#B4530A;color:#fff;border:none;padding:11px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;}
+.btn-login:hover{background:#933F00;}
+/* App */
+#app{display:none;height:100vh;width:100%;overflow:hidden;font-variant-numeric:tabular-nums;}
+.layout{display:flex;height:100vh;width:100%;}
+/* Sidebar */
+.sidebar{width:232px;flex-shrink:0;background:#23201C;height:100%;display:flex;flex-direction:column;padding:20px 12px 12px 12px;}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:0 10px;margin-bottom:6px;}
+.sb-brand-icon{background:#B4530A;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sb-title{font-weight:700;font-size:15px;letter-spacing:-0.01em;color:#F5F1EA;line-height:1.2;}
+.sb-sub{font-size:11px;color:#8A8177;line-height:1.2;}
+.sb-divider{height:1px;background:rgba(255,255,255,0.08);margin:14px 4px;}
+.sb-nav{flex:1;display:flex;flex-direction:column;gap:2px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;color:#B0A79B;position:relative;transition:background .12s,color .12s;}
+.sb-item:hover{background:rgba(255,255,255,0.07);color:#F5F1EA;}
+.sb-item.active{background:rgba(255,255,255,0.09);color:#F5F1EA;}
+.sb-indicator{position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:transparent;}
+.sb-item.active .sb-indicator{background:#D97742;}
+.sb-item-icon{display:flex;width:17px;height:17px;flex-shrink:0;}
+.sb-item-label{font-weight:500;font-size:13.5px;flex:1;}
+.sb-count{font-size:11px;font-weight:600;background:rgba(255,255,255,0.1);color:#C9C1B6;border-radius:99px;padding:1px 7px;}
+.sb-user{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px;}
+.sb-avatar{width:32px;height:32px;border-radius:8px;background:#3E3830;color:#E8E1D7;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0;}
+.sb-username{font-size:13px;font-weight:600;color:#F5F1EA;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-role{font-size:11px;color:#8A8177;}
+.sb-logout{color:#8A8177;cursor:pointer;display:flex;}
+.sb-logout:hover{color:#F5F1EA;}
+/* Main */
+.main-col{flex:1;display:flex;flex-direction:column;height:100%;min-width:0;}
+/* Topbar */
+.topbar{height:56px;flex-shrink:0;background:#FFFFFF;border-bottom:1px solid #E7E2DA;display:flex;align-items:center;gap:12px;padding:0 20px;}
+.topbar h1{margin:0;font-size:16px;font-weight:700;letter-spacing:-0.01em;}
+.topbar-search{position:relative;width:300px;}
+.topbar-search input{width:100%;padding:7px 12px 7px 32px;border:1px solid #E7E2DA;background:#F6F4F0;color:#1C1917;border-radius:8px;font-size:13px;outline:none;}
+.topbar-search input:focus{border-color:#B4530A;background:#fff;}
+.topbar-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#A8A29E;display:flex;}
+.btn-primary{background:#B4530A;color:#fff;border:none;padding:8px 14px;border-radius:8px;display:flex;align-items:center;gap:7px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;}
+.btn-primary:hover{background:#933F00;}
+.btn-secondary{background:#fff;color:#44403C;border:1px solid #E7E2DA;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;}
+.btn-secondary:hover{background:#F6F4F0;}
+/* Content */
+.content{flex:1;overflow-y:auto;min-height:0;}
+/* Cards */
+.card{background:#fff;border:1px solid #E7E2DA;border-radius:12px;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;}
+.stat-card{background:#fff;border:1px solid #E7E2DA;padding:16px;border-radius:12px;}
+.stat-label{font-size:12.5px;font-weight:600;color:#78716C;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;}
+.stat-value{font-size:24px;font-weight:700;letter-spacing:-0.02em;line-height:1;}
+.stat-delta{font-size:12px;margin-top:8px;font-weight:500;}
+/* Tables */
+table{width:100%;text-align:left;border-collapse:collapse;}
+th{padding:10px 16px;font-size:11.5px;text-transform:uppercase;color:#78716C;font-weight:600;letter-spacing:0.05em;border-bottom:1px solid #E7E2DA;background:#FAF8F4;}
+td{padding:11px 16px;border-bottom:1px solid #F3EFE8;font-size:13px;}
+tr:hover td{background:#FAF8F4;}
+/* Chip */
+.chip{font-size:11px;padding:3px 9px;border-radius:99px;font-weight:600;display:inline-block;}
+/* Modal / Drawer */
+.overlay{position:fixed;inset:0;background:rgba(28,25,23,0.4);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal{background:#fff;width:100%;max-width:560px;border-radius:16px;box-shadow:0 24px 60px rgba(28,25,23,0.25);display:flex;flex-direction:column;max-height:88vh;overflow:hidden;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #EFEAE2;}
+.modal-body{flex:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:16px;}
+.modal-footer{padding:14px 22px;border-top:1px solid #EFEAE2;display:flex;justify-content:flex-end;gap:10px;background:#FAF8F4;}
+.drawer-overlay{position:fixed;inset:0;background:rgba(28,25,23,0.32);z-index:45;}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:420px;background:#fff;z-index:46;box-shadow:-16px 0 40px rgba(28,25,23,0.18);display:flex;flex-direction:column;}
+.drawer-header{padding:18px 20px;border-bottom:1px solid #EFEAE2;display:flex;align-items:flex-start;justify-content:space-between;}
+.drawer-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:20px;}
+.drawer-footer{padding:14px 20px;border-top:1px solid #EFEAE2;display:flex;gap:10px;}
+/* Form */
+.form-label{display:block;font-size:12.5px;font-weight:600;color:#44403C;margin-bottom:4px;}
+.form-input{width:100%;padding:9px 12px;border:1px solid #E7E2DA;background:#F6F4F0;border-radius:8px;font-size:13px;outline:none;color:#1C1917;}
+.form-input:focus{border-color:#B4530A;background:#fff;}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+/* Notif dropdown */
+#notif-dropdown{display:none;position:absolute;top:42px;right:0;width:320px;background:#fff;border:1px solid #E7E2DA;border-radius:12px;box-shadow:0 12px 32px rgba(28,25,23,0.14);z-index:40;overflow:hidden;}
+/* Kanban */
+.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-items:start;flex:1;min-height:0;overflow-y:auto;padding:24px;}
+.kanban-col{background:#EFEBE3;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;}
+.kanban-col-head{display:flex;align-items:center;gap:8px;padding:2px 4px;}
+.kanban-card{background:#fff;border:1px solid #E7E2DA;border-radius:10px;padding:12px;cursor:pointer;box-shadow:0 1px 2px rgba(28,25,23,0.05);}
+.kanban-card:hover{border-color:#C9BFB0;box-shadow:0 3px 10px rgba(28,25,23,0.08);}
+/* Loading spinner */
+.spinner{width:24px;height:24px;border:3px solid #E7E2DA;border-top-color:#B4530A;border-radius:50%;animation:spin .7s linear infinite;margin:40px auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
+<body>
 
-<body class="dark-theme">
-    <!-- Login Screen Overlay -->
-    <div id="login-screen" style="display:none; position:fixed; inset:0; background:var(--bg-primary); z-index:9999; align-items:center; justify-content:center; background-image: radial-gradient(circle at center, rgba(229, 165, 93, 0.08) 0%, var(--bg-primary) 80%);">
-        <div style="background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:40px; width:100%; max-width:400px; box-shadow:var(--shadow-lg); text-align:center; backdrop-filter:var(--blur-xl);">
-            <div style="display:inline-flex; align-items:center; gap:12px; margin-bottom:32px;">
-                <i class="ph ph-scissors" style="font-size:32px; color:var(--accent-gold);"></i>
-                <h2 style="font-family:var(--font-heading); font-size:28px; margin:0;">Saloon<span style="color:var(--accent-gold); font-weight:400; font-style:italic;">Pro</span></h2>
-            </div>
-            <h3 style="margin-bottom:24px; font-weight:500; font-size:18px; color:var(--text-secondary);">Staff Portal Login</h3>
-            <form id="login-form" style="text-align:left;">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:13px; color:var(--text-secondary);">Username</label>
-                    <input type="text" id="login-username" required style="width:100%; padding:12px 16px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-                <div style="margin-bottom:24px;">
-                    <label style="display:block; margin-bottom:8px; font-size:13px; color:var(--text-secondary);">Password</label>
-                    <input type="password" id="login-password" required style="width:100%; padding:12px 16px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-                <div id="login-error" style="color:var(--danger); font-size:13px; margin-bottom:16px; display:none; text-align:center;"></div>
-                <button type="submit" class="btn btn-primary" id="btn-login-submit" style="width:100%; padding:14px; text-transform:uppercase; letter-spacing:1px;">Sign In</button>
-            </form>
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+  <div id="login-box">
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.88 18.09A5 5 0 0 0 18 9h-2.26a10 10 0 1 0-9.14 14h9.14a5 5 0 0 0 4.14-4.91 5 5 0 0 0 .96-0z"></path><path d="M6.6 15a6 6 0 0 0 5.4 3.4A6 6 0 0 0 6.6 15z" fill="none"></path><path d="M9 10.5c.5-1.5 2-3 4-3s3.5 1.5 4 3" stroke-width="2"></path></svg>
+      </div>
+      <div>
+        <div class="sb-title" style="color:#1C1917">Lumière</div>
+        <div class="sb-sub" style="color:#78716C">Staff Portal</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label class="login-label">Username</label>
+      <input id="login-username" type="text" class="login-input" placeholder="admin" autocomplete="username">
+    </div>
+    <div style="margin-bottom:18px;">
+      <label class="login-label">Password</label>
+      <input id="login-password" type="password" class="login-input" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div id="login-error"></div>
+    <button class="btn-login" id="btn-login">Sign in</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.88 18.09A5 5 0 0 0 18 9h-2.26a10 10 0 1 0-9.14 14"></path><path d="M9 10.5c.5-1.5 2-3 4-3s3.5 1.5 4 3" stroke-width="2"></path></svg>
+      </div>
+      <div>
+        <div class="sb-title">Lumière</div>
+        <div class="sb-sub" id="sb-workspace">Hair Salon</div>
+      </div>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <nav class="sb-nav" id="sidebar-nav"></nav>
+
+    <div class="sb-user">
+      <div class="sb-avatar" id="sb-initials">--</div>
+      <div style="flex:1;min-width:0">
+        <div class="sb-username" id="sb-username">Loading…</div>
+        <div class="sb-role" id="sb-role">Staff</div>
+      </div>
+      <span class="sb-logout" title="Sign out" id="btn-logout">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- MAIN COLUMN -->
+  <div class="main-col">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <h1 id="screen-title">Dashboard</h1>
+      <div style="flex:1"></div>
+      <div class="topbar-search">
+        <span class="topbar-search-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span>
+        <input type="text" id="search-input" placeholder="Search appointments, clients…">
+      </div>
+      <div style="position:relative">
+        <button id="btn-notif" style="width:34px;height:34px;border-radius:8px;border:1px solid #E7E2DA;background:#fff;color:#57534E;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg>
+          <span id="notif-dot" style="position:absolute;top:6px;right:7px;width:7px;height:7px;border-radius:99px;background:#B3261E;border:1.5px solid #fff;display:none"></span>
+        </button>
+        <div id="notif-dropdown">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #EFEAE2;">
+            <span style="font-weight:700;font-size:13px">Notifications</span>
+          </div>
+          <div id="notif-list"></div>
         </div>
+      </div>
+      <button class="btn-primary" id="btn-new-appt">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+        New Appointment
+      </button>
     </div>
 
-    <div id="app" class="app-layout" style="display:none;">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="brand">
-                <i class="ph ph-scissors brand-icon"></i>
-                <h1>Saloon<span>Pro</span></h1>
-            </div>
+    <!-- CONTENT AREA -->
+    <div class="content" id="content-area">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+</div>
 
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-page="dashboard">
-                    <i class="ph ph-squares-four"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="nav-item" data-page="appointments">
-                    <i class="ph ph-calendar-check"></i>
-                    <span>Appointments</span>
-                </a>
-                <a href="#" class="nav-item" data-page="clients">
-                    <i class="ph ph-users"></i>
-                    <span>Clients</span>
-                </a>
-                <a href="#" class="nav-item" data-page="services">
-                    <i class="ph ph-sparkle"></i>
-                    <span>Services</span>
-                </a>
-                <a href="#" class="nav-item" data-page="staff" id="nav-staff">
-                    <i class="ph ph-user-circle-gear"></i>
-                    <span>Staff</span>
-                </a>
-                <a href="#" class="nav-item" data-page="checkout">
-                    <i class="ph ph-shopping-cart"></i>
-                    <span>POS Checkout</span>
-                </a>
-                <a href="#" class="nav-item" data-page="inventory">
-                    <i class="ph ph-package"></i>
-                    <span>Inventory</span>
-                </a>
-                <a href="#" class="nav-item" data-page="expenses">
-                    <i class="ph ph-wallet"></i>
-                    <span>Expenses</span>
-                </a>
-                <a href="#" class="nav-item" data-page="reconciliation">
-                    <i class="ph ph-vault"></i>
-                    <span>Drawer Close</span>
-                </a>
-            </nav>
+<!-- APPOINTMENT DETAIL DRAWER -->
+<div id="drawer-overlay" class="drawer-overlay" style="display:none"></div>
+<div id="appt-drawer" class="drawer" style="display:none">
+  <div class="drawer-header">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="drawer-id" style="font-family:'Spline Sans Mono',monospace;font-size:13px;font-weight:600;color:#78716C"></span>
+        <span id="drawer-status-chip" class="chip"></span>
+      </div>
+      <h2 id="drawer-service" style="margin:6px 0 0 0;font-size:18px;font-weight:700;letter-spacing:-0.01em"></h2>
+    </div>
+    <button id="btn-close-drawer" style="color:#A8A29E;background:none;border:none;cursor:pointer;display:flex;padding:4px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div>
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#78716C;margin-bottom:10px">Progress</div>
+      <div id="drawer-steps" style="display:flex;align-items:center;gap:4px"></div>
+    </div>
+    <div id="drawer-client-card" style="background:#FAF8F4;border:1px solid #EFEAE2;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="drawer-details-grid"></div>
+    <div>
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#78716C;margin-bottom:8px">Notes</div>
+      <p id="drawer-notes" style="margin:0;font-size:13px;color:#57534E;line-height:1.5"></p>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn-secondary" style="flex:1" id="btn-cancel-appt">Cancel appointment</button>
+    <button class="btn-primary" style="flex:1.4" id="btn-advance-stage">Advance stage</button>
+  </div>
+</div>
 
-            <div class="sidebar-footer">
-                <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
-                    <i class="ph ph-moon"></i>
-                </button>
-                <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=1c1c1c&color=e5a55d" alt="Admin"
-                        class="avatar" id="user-avatar">
-                    <div class="user-info">
-                        <span class="user-name" id="user-display-name">Manager</span>
-                        <span class="user-role" id="user-display-role">Admin</span>
-                    </div>
-                </div>
-                <button class="btn" id="btn-logout" style="width:100%; margin-top:8px; background:rgba(248,113,113,0.1); color:var(--danger); border:1px solid rgba(248,113,113,0.2); font-weight:600;">
-                    <i class="ph ph-sign-out"></i> Logout
-                </button>
-            </div>
-        </aside>
+<!-- NEW APPOINTMENT MODAL -->
+<div class="overlay" id="new-appt-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h2 style="margin:0;font-size:17px;font-weight:700">New Appointment</h2>
+        <p id="modal-step-label" style="margin:2px 0 0 0;font-size:12.5px;color:#78716C">Step 1 of 3 — Client</p>
+      </div>
+      <button id="btn-close-modal" style="color:#A8A29E;background:none;border:none;cursor:pointer;display:flex;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
+    </div>
+    <div style="display:flex;gap:5px;padding:12px 22px 0 22px" id="modal-step-bars"></div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" id="btn-modal-back">Cancel</button>
+      <button class="btn-primary" id="btn-modal-next">Continue</button>
+    </div>
+  </div>
+</div>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <header class="topbar">
-                <h2 id="page-title">Overview</h2>
-                <div class="topbar-actions">
-                    <button class="btn btn-primary" id="btn-new-appointment">
-                        <i class="ph ph-plus"></i>
-                        New Appointment
-                    </button>
-                    <button class="btn-icon">
-                        <i class="ph ph-bell"></i>
-                        <span class="badge">3</span>
-                    </button>
-                </div>
-            </header>
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────────────────
+const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:8000/api/index.php'
+  : '/api/index.php';
 
-            <div id="page-container" class="page-container">
-                <!-- Pages will be dynamically injected here -->
-            </div>
-        </main>
+// ─── STATE ─────────────────────────────────────────────────────────────────
+const S = {
+  token: localStorage.getItem('lum_token') || '',
+  user: JSON.parse(localStorage.getItem('lum_user') || 'null'),
+  screen: 'dashboard',
+  appointmentsView: 'board',
+  appointments: [],
+  clients: [],
+  services: [],
+  staff: [],
+  inventory: [],
+  dashboard: null,
+  drawerApptId: null,
+  modalStep: 0,
+  modalData: { client_name:'', client_phone:'', client_email:'', service_id:'', staff_id:'', date:'', time:'', notes:'' },
+  searchQ: ''
+};
+
+// ─── API HELPERS ───────────────────────────────────────────────────────────
+async function api(action, method='GET', body=null) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (S.token) opts.headers['Authorization'] = 'Bearer ' + S.token;
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(API + '?action=' + action, opts);
+  return res.json();
+}
+
+// ─── STAGE META ────────────────────────────────────────────────────────────
+const STAGES = ['pending','confirmed','in_progress','completed'];
+const STAGE_META = {
+  pending:    { label:'Pending',    chipBg:'#EDEAE4', chipColor:'#57534E', dot:'#A8A29E' },
+  confirmed:  { label:'Confirmed',  chipBg:'#FCF3E3', chipColor:'#96590A', dot:'#D97706' },
+  in_progress:{ label:'In Progress',chipBg:'#E8F0FC', chipColor:'#1D5FBF', dot:'#3B76D4' },
+  completed:  { label:'Completed',  chipBg:'#E3F2E9', chipColor:'#1A7F4E', dot:'#2E9E63' },
+  cancelled:  { label:'Cancelled',  chipBg:'#FBEAE9', chipColor:'#B3261E', dot:'#D64545' }
+};
+
+// ─── UTILS ─────────────────────────────────────────────────────────────────
+function initials(name='') { return (name||'').split(/[\s_]+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase() || '?'; }
+function chip(status) {
+  const m = STAGE_META[status] || STAGE_META.pending;
+  return `<span class="chip" style="background:${m.chipBg};color:${m.chipColor}">${m.label}</span>`;
+}
+function icon(svg) { return `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svg}</svg>`; }
+
+const ICONS = {
+  dashboard: '<rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect>',
+  appointments: '<rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line>',
+  clients: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
+  services: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path>',
+  staff: '<circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 1 0-16 0"></path>',
+  inventory: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><line x1="12" x2="12" y1="22" y2="12"></line>',
+  settings: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle>'
+};
+
+const NAV_ITEMS = [
+  { key:'dashboard',    label:'Dashboard',    icon:'dashboard' },
+  { key:'appointments', label:'Appointments', icon:'appointments' },
+  { key:'clients',      label:'Clients',      icon:'clients' },
+  { key:'services',     label:'Services',     icon:'services' },
+  { key:'staff',        label:'Staff',        icon:'staff' },
+  { key:'inventory',    label:'Inventory',    icon:'inventory' },
+  { key:'settings',     label:'Settings',     icon:'settings' }
+];
+
+// ─── SIDEBAR ───────────────────────────────────────────────────────────────
+function renderSidebar() {
+  const role = S.user?.role || 'staff';
+  const items = role === 'admin' ? NAV_ITEMS : NAV_ITEMS.filter(x => x.key !== 'settings');
+  const openAppts = S.appointments.filter(a => a.status !== 'completed' && a.status !== 'cancelled').length;
+  document.getElementById('sidebar-nav').innerHTML = items.map(m => {
+    const active = S.screen === m.key;
+    const count = m.key === 'appointments' && openAppts > 0 ? `<span class="sb-count">${openAppts}</span>` : '';
+    return `<div class="sb-item${active?' active':''}" data-screen="${m.key}">
+      <span class="sb-indicator"></span>
+      <span class="sb-item-icon">${icon(ICONS[m.icon])}</span>
+      <span class="sb-item-label">${m.label}</span>${count}</div>`;
+  }).join('');
+  document.getElementById('sb-initials').textContent = initials(S.user?.username || S.user?.name || '');
+  document.getElementById('sb-username').textContent = S.user?.username || S.user?.name || 'Staff';
+  document.getElementById('sb-role').textContent = S.user?.role === 'admin' ? 'Administrator' : (S.user?.role === 'receptionist' ? 'Receptionist' : 'Stylist');
+  document.getElementById('sb-workspace').textContent = 'Lumière Salon';
+  document.querySelectorAll('.sb-item').forEach(el => {
+    el.addEventListener('click', () => navigate(el.dataset.screen));
+  });
+}
+
+// ─── NAVIGATE ──────────────────────────────────────────────────────────────
+async function navigate(screen) {
+  S.screen = screen;
+  const titles = { dashboard:'Dashboard', appointments:'Appointments', clients:'Clients', services:'Services', staff:'Staff', inventory:'Inventory', settings:'Settings' };
+  document.getElementById('screen-title').textContent = titles[screen] || screen;
+  renderSidebar();
+  const el = document.getElementById('content-area');
+  el.innerHTML = '<div class="spinner"></div>';
+  await loadScreenData(screen);
+  renderScreen();
+}
+
+async function loadScreenData(screen) {
+  try {
+    if (screen === 'dashboard') {
+      const [dash, appts] = await Promise.all([api('dashboard'), api('appointments')]);
+      S.dashboard = dash.data || dash;
+      S.appointments = Array.isArray(appts) ? appts : (appts.data || appts.appointments || []);
+    } else if (screen === 'appointments') {
+      const r = await api('appointments');
+      S.appointments = Array.isArray(r) ? r : (r.data || r.appointments || []);
+    } else if (screen === 'clients') {
+      const r = await api('clients');
+      S.clients = Array.isArray(r) ? r : (r.data || r.clients || []);
+    } else if (screen === 'services') {
+      const r = await api('services');
+      S.services = Array.isArray(r) ? r : (r.data || r.services || []);
+    } else if (screen === 'staff') {
+      const r = await api('staff');
+      S.staff = Array.isArray(r) ? r : (r.data || r.staff || []);
+    } else if (screen === 'inventory') {
+      const r = await api('inventory');
+      S.inventory = Array.isArray(r) ? r : (r.data || r.products || r.inventory || []);
+    }
+  } catch(e) { console.error('Load error', e); }
+}
+
+// ─── RENDER ROUTER ─────────────────────────────────────────────────────────
+function renderScreen() {
+  const el = document.getElementById('content-area');
+  const fns = { dashboard:renderDashboard, appointments:renderAppointments, clients:renderClients, services:renderServices, staff:renderStaff, inventory:renderInventory, settings:renderSettings };
+  el.innerHTML = '';
+  (fns[S.screen] || renderDashboard)();
+}
+
+// ─── DASHBOARD ─────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const el = document.getElementById('content-area');
+  const d = S.dashboard || {};
+  const appts = S.appointments;
+  const todayRevenue = d.today_revenue || d.revenue_today || 0;
+  const openCount = appts.filter(a => a.status !== 'completed' && a.status !== 'cancelled').length;
+  const completedToday = appts.filter(a => a.status === 'completed').length;
+
+  el.innerHTML = `<div style="padding:24px;max-width:1280px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px">
+      <div>
+        <h2 style="margin:0;font-size:22px;font-weight:700;letter-spacing:-0.02em">Good day, ${S.user?.username || 'Staff'} 👋</h2>
+        <p style="margin:2px 0 0 0;color:#78716C;font-size:13.5px">Here's what's happening at Lumière today.</p>
+      </div>
+      <span style="font-size:13px;color:#78716C">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric',year:'numeric'})}</span>
     </div>
 
-    <!-- Add Service Modal -->
-    <div id="add-service-modal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-        <div
-            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="margin:0;">Add New Service</h3>
-                <button type="button" class="btn-icon" id="close-service-modal" style="width:32px; height:32px;"><i
-                        class="ph ph-x"></i></button>
-            </div>
+    <div class="stat-grid">
+      ${statCard("Today's Revenue", todayRevenue ? 'Rs. '+Number(todayRevenue).toLocaleString() : '—', '', '#1A7F4E', '<line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>', '#1A7F4E')}
+      ${statCard('Open Appointments', String(openCount), openCount+' active bookings', '#96590A', '<rect width="18" height="18" x="3" y="4" rx="2"></rect><line x1="3" x2="21" y1="10" y2="10"></line>', '#D97706')}
+      ${statCard('Completed Today', String(completedToday), 'services done', '#78716C', '<circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path>', '#2E9E63')}
+      ${statCard('Total Clients', String(d.total_clients || S.clients.length || '—'), 'in database', '#78716C', '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle>', '#3B76D4')}
+    </div>
 
-            <form id="add-service-form">
-                <div style="margin-bottom:16px;">
-                    <label
-                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Service
-                        Name</label>
-                    <input type="text" id="s-name" required
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="margin-bottom:16px;">
-                    <label
-                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
-                    <textarea id="s-desc" rows="2"
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label
-                            style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Duration
-                            (mins)</label>
-                        <input type="number" id="s-duration" required min="15" step="15"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                    <div>
-                        <label
-                            style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Price
-                            ($)</label>
-                        <input type="number" id="s-price" required min="0" step="0.01"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
-
-                <div style="margin-bottom:24px;">
-                    <label
-                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
-                    <select id="s-category" required
-                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                        <option value="Haircuts & Styling">Haircuts & Styling</option>
-                        <option value="Color & Highlights">Color & Highlights</option>
-                        <option value="Treatments">Treatments</option>
-                    </select>
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px;">
-                    <button type="button" class="btn" id="cancel-service-modal"
-                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="save-service-btn">Save Service</button>
-                </div>
-            </form>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px">
+      <div class="card" style="overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #EFEAE2">
+          <h3 style="margin:0;font-size:14px;font-weight:700">Recent Appointments</h3>
+          <span onclick="navigate('appointments')" style="font-size:12.5px;color:#B4530A;font-weight:600;cursor:pointer">View all</span>
         </div>
-    </div>
-
-    <!-- Edit Service Modal -->
-    <div id="edit-service-modal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-        <div
-            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="margin:0;">Edit Service</h3>
-                <button type="button" class="btn-icon" id="close-edit-service-modal" style="width:32px; height:32px;"><i
-                        class="ph ph-x"></i></button>
+        ${appts.length === 0 ? '<p style="padding:20px;color:#78716C;font-size:13px">No appointments found.</p>' :
+          appts.slice(0,6).map(a => `
+          <div onclick="openDrawer(${a.id})" style="display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid #F3EFE8;cursor:pointer" onmouseover="this.style.background='#FAF8F4'" onmouseout="this.style.background=''">
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:12px;font-weight:600;color:#78716C;width:40px;flex-shrink:0">#${a.id}</span>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:13.5px;font-weight:600">${a.service_name||a.service||'Service'}</div>
+              <div style="font-size:12px;color:#78716C;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.client_name||a.customer_name||'—'} · ${a.date||''} ${a.time||''}</div>
             </div>
-
-            <form id="edit-service-form">
-                <input type="hidden" id="edit-service-id">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Service Name</label>
-                    <input type="text" id="edit-s-name" required
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
-                    <textarea id="edit-s-desc" rows="2"
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Duration (mins)</label>
-                        <input type="number" id="edit-s-duration" required min="15" step="15"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Price ($)</label>
-                        <input type="number" id="edit-s-price" required min="0" step="0.01"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
-
-                <div style="margin-bottom:24px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
-                    <select id="edit-s-category" required
-                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                        <option value="Haircuts & Styling">Haircuts & Styling</option>
-                        <option value="Color & Highlights">Color & Highlights</option>
-                        <option value="Treatments">Treatments</option>
-                    </select>
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px;">
-                    <button type="button" class="btn" id="cancel-edit-service-modal"
-                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="save-edit-service-btn">Save Changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Staff Modal -->
-    <div id="add-staff-modal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-        <div
-            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="margin:0;">Add New Staff Member</h3>
-                <button type="button" class="btn-icon" id="close-staff-modal" style="width:32px; height:32px;"><i
-                        class="ph ph-x"></i></button>
+            ${chip(a.status||'pending')}
+          </div>`).join('')}
+      </div>
+      <div class="card" style="padding:18px">
+        <h3 style="margin:0 0 14px 0;font-size:14px;font-weight:700">Appointments by status</h3>
+        ${STAGES.map(sg => {
+          const cnt = appts.filter(a=>a.status===sg).length;
+          const pct = appts.length > 0 ? Math.round(cnt/appts.length*100) : 0;
+          const m = STAGE_META[sg];
+          return `<div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
+              <span style="color:#44403C;font-weight:500">${m.label}</span>
+              <span style="color:#78716C;font-weight:600">${cnt}</span>
             </div>
-
-            <form id="add-staff-form">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Full
-                        Name</label>
-                    <input type="text" id="staff-name" required
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Role /
-                        Title</label>
-                    <input type="text" id="staff-role" required placeholder="e.g. Master Stylist"
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="margin-bottom:24px;">
-                    <label
-                        style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Specializations
-                        (comma separated)</label>
-                    <input type="text" id="staff-specializations" placeholder="e.g. Balayage, Precision Cuts"
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px;">
-                    <button type="button" class="btn" id="cancel-staff-modal"
-                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="save-staff-btn">Add Staff</button>
-                </div>
-            </form>
-        </div>
+            <div style="height:6px;border-radius:99px;background:#F0EBE3;overflow:hidden">
+              <div style="height:100%;border-radius:99px;background:${m.dot};width:${pct}%"></div>
+            </div></div>`;
+        }).join('')}
+        <button onclick="navigate('appointments')" style="margin-top:4px;width:100%;padding:8px;font-size:13px;font-weight:600;color:#B4530A;border:1px solid #EAD9C9;background:#FBF5EE;border-radius:8px;cursor:pointer;font-family:inherit" onmouseover="this.style.background='#F6EBDD'" onmouseout="this.style.background='#FBF5EE'">Open appointment board →</button>
+      </div>
     </div>
+  </div>`;
+}
 
-    <!-- Edit Staff Modal -->
-    <div id="edit-staff-modal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-        <div
-            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="margin:0;">Edit Staff Member</h3>
-                <button type="button" class="btn-icon" id="close-edit-staff-modal" style="width:32px; height:32px;"><i
-                        class="ph ph-x"></i></button>
-            </div>
-
-            <form id="edit-staff-form">
-                <input type="hidden" id="edit-staff-id">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Full Name</label>
-                    <input type="text" id="edit-staff-name" required
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Portal Account Credentials</label>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                        <input type="text" id="edit-staff-username" required placeholder="Username" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                        <input type="password" id="edit-staff-pwd" placeholder="New Password (optional)" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
-
-                <div style="margin-bottom:16px;" id="edit-staff-comm-section">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Commission Configuration</label>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-                        <input type="number" id="edit-staff-comm-rate" placeholder="Commission Rate" step="0.1" style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                        <select id="edit-staff-comm-type" style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                            <option value="percentage">Percentage (%)</option>
-                            <option value="fixed">Fixed ($)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div style="margin-bottom:24px;" id="edit-staff-specs-section">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Specializations (comma separated)</label>
-                    <input type="text" id="edit-staff-specializations" placeholder="e.g. Balayage, Precision Cuts"
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px;">
-                    <button type="button" class="btn" id="cancel-edit-staff-modal"
-                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="save-edit-staff-btn">Save Changes</button>
-                </div>
-            </form>
-        </div>
+function statCard(label, value, delta, deltaColor, svgPaths, iconColor) {
+  return `<div class="stat-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <span class="stat-label">${label}</span>
+      <span style="display:flex;color:${iconColor}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svgPaths}</svg></span>
     </div>
+    <div class="stat-value">${value}</div>
+    <div class="stat-delta" style="color:${deltaColor}">${delta}</div>
+  </div>`;
+}
 
-    <!-- New Appointment Modal -->
-    <div id="new-appointment-modal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-        <div
-            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="margin:0;">Create Appointment</h3>
-                <button type="button" class="btn-icon" id="close-appointment-modal" style="width:32px; height:32px;"><i
-                        class="ph ph-x"></i></button>
-            </div>
+// ─── APPOINTMENTS ──────────────────────────────────────────────────────────
+function renderAppointments() {
+  const el = document.getElementById('content-area');
+  const view = S.appointmentsView;
+  const appts = filterAppts(S.appointments);
 
-            <form id="new-appointment-form">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Client Name</label>
-                    <input type="text" id="apt-client-name" required
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Client Email</label>
-                        <input type="email" id="apt-client-email"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Client Phone</label>
-                        <input type="text" id="apt-client-phone" required
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Service</label>
-                        <select id="apt-service-id" required
-                            style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;"></select>
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Stylist</label>
-                        <select id="apt-staff-id" required
-                            style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;"></select>
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Date</label>
-                        <input type="date" id="apt-date" required
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Time</label>
-                        <input type="time" id="apt-time" required
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
-
-                <div style="margin-bottom:24px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Booking Type</label>
-                    <select id="apt-client-type" required
-                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                        <option value="pre-booked">Pre-booked</option>
-                        <option value="walk-in">Walk-in</option>
-                    </select>
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px;">
-                    <button type="button" class="btn" id="cancel-appointment-modal"
-                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="save-appointment-btn">Save Appointment</button>
-                </div>
-            </form>
-        </div>
+  el.innerHTML = `<div style="padding:24px;height:100%;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-shrink:0">
+      <div style="display:flex;background:#EDE9E1;border-radius:8px;padding:3px">
+        <button id="btn-view-board" onclick="switchView('board')" style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;${view==='board'?'background:#fff;color:#1C1917;box-shadow:0 1px 3px rgba(28,25,23,0.12)':'background:transparent;color:#78716C'}">Board</button>
+        <button id="btn-view-table" onclick="switchView('table')" style="padding:6px 14px;border-radius:6px;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;${view==='table'?'background:#fff;color:#1C1917;box-shadow:0 1px 3px rgba(28,25,23,0.12)':'background:transparent;color:#78716C'}">Table</button>
+      </div>
+      <div style="flex:1"></div>
+      <span style="font-size:13px;color:#78716C">${appts.filter(a=>a.status!=='completed'&&a.status!=='cancelled').length} open · ${appts.length} total</span>
     </div>
+    ${view === 'board' ? renderKanban(appts) : renderApptTable(appts)}
+  </div>`;
+}
 
-    <!-- Add Product Modal -->
-    <div id="add-product-modal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-        <div
-            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="margin:0;">Add New Product</h3>
-                <button type="button" class="btn-icon" id="close-product-modal" style="width:32px; height:32px;"><i
-                        class="ph ph-x"></i></button>
-            </div>
+function filterAppts(list) {
+  if (!S.searchQ) return list;
+  const q = S.searchQ.toLowerCase();
+  return list.filter(a => (a.client_name||'').toLowerCase().includes(q) || (a.service_name||'').toLowerCase().includes(q));
+}
 
-            <form id="add-product-form">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Product Name</label>
-                    <input type="text" id="p-name" required
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                </div>
+function switchView(v) { S.appointmentsView = v; renderScreen(); }
 
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
-                    <textarea id="p-desc" rows="2"
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Price ($)</label>
-                        <input type="number" id="p-price" required min="0" step="0.01"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Initial Stock</label>
-                        <input type="number" id="p-stock" required min="0" step="0.1"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
-                        <select id="p-category" required
-                            style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                            <option value="retail_sale">Retail Sale</option>
-                            <option value="salon_consumption">Salon Consumption</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Min Stock Alert</label>
-                        <input type="number" id="p-min-alert" required min="0" step="1"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px;">
-                    <button type="button" class="btn" id="cancel-product-modal"
-                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="save-product-btn">Save Product</button>
-                </div>
-            </form>
+function renderKanban(appts) {
+  return `<div class="kanban" style="padding:0">` +
+    STAGES.map(sg => {
+      const m = STAGE_META[sg];
+      const cards = appts.filter(a => (a.status||'pending') === sg);
+      return `<div class="kanban-col">
+        <div class="kanban-col-head">
+          <span style="width:8px;height:8px;border-radius:99px;background:${m.dot}"></span>
+          <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#57534E">${m.label}</span>
+          <span style="font-size:11.5px;font-weight:600;color:#A8A29E">${cards.length}</span>
         </div>
+        ${cards.map(a => `
+        <div class="kanban-card" onclick="openDrawer(${a.id})">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-family:'Spline Sans Mono',monospace;font-size:11px;font-weight:600;color:#78716C">#${a.id}</span>
+          </div>
+          <div style="font-size:13.5px;font-weight:600;line-height:1.3">${a.service_name||a.service||'Appointment'}</div>
+          <div style="font-size:12px;color:#78716C;margin:3px 0 8px 0">${a.date||''} ${a.time||''}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;color:#57534E">${a.client_name||a.customer_name||'—'}</span>
+            ${a.price||a.total ? `<span style="font-size:12.5px;font-weight:700">Rs. ${Number(a.price||a.total||0).toLocaleString()}</span>` : ''}
+          </div>
+        </div>`).join('')}
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+function renderApptTable(appts) {
+  return `<div class="card" style="overflow:hidden">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Service</th><th>Client</th><th>Stylist</th><th>Date & Time</th><th>Status</th><th style="text-align:right">Price</th>
+      </tr></thead>
+      <tbody>${appts.map(a => `<tr onclick="openDrawer(${a.id})" style="cursor:pointer">
+        <td style="font-family:'Spline Sans Mono',monospace;font-size:12px;font-weight:600;color:#B4530A">#${a.id}</td>
+        <td><div style="font-weight:600">${a.service_name||a.service||'—'}</div><div style="font-size:11.5px;color:#78716C">${a.duration_mins||a.duration||''} min</div></td>
+        <td>${a.client_name||a.customer_name||'—'}</td>
+        <td>${a.staff_name||a.stylist_name||'—'}</td>
+        <td>${a.date||''} ${a.time||''}</td>
+        <td>${chip(a.status||'pending')}</td>
+        <td style="text-align:right;font-weight:700">${a.price||a.total ? 'Rs. '+Number(a.price||a.total).toLocaleString() : '—'}</td>
+      </tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+// ─── CLIENTS ───────────────────────────────────────────────────────────────
+function renderClients() {
+  const el = document.getElementById('content-area');
+  const clients = S.clients;
+  const pal = [['#EAD9C9','#8A3D05'],['#DCE7F5','#1D5FBF'],['#DFF0E6','#1A7F4E'],['#F0E6F8','#6D28D9'],['#F5E3E0','#B3261E']];
+  el.innerHTML = `<div style="padding:24px;max-width:1100px">
+    <div class="card" style="overflow:hidden">
+      <div style="padding:12px 16px;border-bottom:1px solid #EFEAE2;display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:13px;color:#78716C;font-weight:500">${clients.length} clients</span>
+      </div>
+      <table><thead><tr><th>Client</th><th>Phone</th><th>Email</th><th>Type</th></tr></thead>
+      <tbody>${clients.length===0?'<tr><td colspan="4" style="padding:30px;text-align:center;color:#78716C">No clients found.</td></tr>':
+        clients.map((c,i) => {
+          const p = pal[i%5];
+          const ini = initials(c.name||c.client_name||'');
+          return `<tr>
+            <td><div style="display:flex;align-items:center;gap:10px">
+              <div style="width:30px;height:30px;border-radius:99px;background:${p[0]};color:${p[1]};display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex-shrink:0">${ini}</div>
+              <span style="font-weight:600">${c.name||c.client_name||'—'}</span>
+            </div></td>
+            <td style="font-family:'Spline Sans Mono',monospace">${c.phone||c.client_phone||'—'}</td>
+            <td>${c.email||c.client_email||'—'}</td>
+            <td>${c.client_type||c.type||'walk-in'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody></table>
     </div>
+  </div>`;
+}
 
-    <!-- Log Expense Modal -->
-    <div id="add-expense-modal"
-        style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center;">
-        <div
-            style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-lg); padding:30px; width:100%; max-width:500px; box-shadow:var(--shadow-xl);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
-                <h3 style="margin:0;">Log Expense</h3>
-                <button type="button" class="btn-icon" id="close-expense-modal" style="width:32px; height:32px;"><i
-                        class="ph ph-x"></i></button>
-            </div>
+// ─── SERVICES ──────────────────────────────────────────────────────────────
+function renderServices() {
+  const el = document.getElementById('content-area');
+  const svcs = S.services;
+  el.innerHTML = `<div style="padding:24px;max-width:1100px">
+    <div class="card" style="overflow:hidden">
+      <table><thead><tr><th>Service</th><th>Category</th><th>Duration</th><th style="text-align:right">Price</th></tr></thead>
+      <tbody>${svcs.length===0?'<tr><td colspan="4" style="padding:30px;text-align:center;color:#78716C">No services found.</td></tr>':
+        svcs.map(s=>`<tr>
+          <td style="font-weight:600">${s.name||'—'}</td>
+          <td>${s.category||'—'}</td>
+          <td>${s.duration_mins||s.duration||'—'} min</td>
+          <td style="text-align:right;font-weight:700">Rs. ${Number(s.price||0).toLocaleString()}</td>
+        </tr>`).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+}
 
-            <form id="add-expense-form">
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Category</label>
-                    <select id="exp-category" required
-                        style="width:100%; padding:10px 14px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                        <option value="Rent">Rent</option>
-                        <option value="Utilities">Utilities</option>
-                        <option value="Salon Supplies">Salon Supplies</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="Salaries">Salaries</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
+// ─── STAFF ─────────────────────────────────────────────────────────────────
+function renderStaff() {
+  const el = document.getElementById('content-area');
+  const staff = S.staff;
+  const pal = [['#EAD9C9','#8A3D05'],['#DCE7F5','#1D5FBF'],['#DFF0E6','#1A7F4E'],['#F0E6F8','#6D28D9'],['#F5E3E0','#B3261E']];
+  const roleChip = r => r==='admin'?'<span class="chip" style="background:#F0EAFB;color:#6D28D9">Admin</span>':r==='receptionist'?'<span class="chip" style="background:#FCF3E3;color:#96590A">Receptionist</span>':'<span class="chip" style="background:#E8F0FC;color:#1D5FBF">Stylist</span>';
+  el.innerHTML = `<div style="padding:24px;max-width:1100px">
+    <div class="card" style="overflow:hidden">
+      <table><thead><tr><th>Staff</th><th>Role</th><th>Status</th></tr></thead>
+      <tbody>${staff.length===0?'<tr><td colspan="3" style="padding:30px;text-align:center;color:#78716C">No staff found.</td></tr>':
+        staff.map((u,i)=>{
+          const p=pal[i%5];
+          return `<tr>
+            <td><div style="display:flex;align-items:center;gap:10px">
+              <div style="width:30px;height:30px;border-radius:99px;background:${p[0]};color:${p[1]};display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px">${initials(u.username||u.name||'')}</div>
+              <span style="font-weight:600">${u.username||u.name||'—'}</span>
+            </div></td>
+            <td>${roleChip(u.role||'stylist')}</td>
+            <td>${u.status||'active'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+}
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Amount ($)</label>
-                        <input type="number" id="exp-amount" required min="0.01" step="0.01"
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Expense Date</label>
-                        <input type="date" id="exp-date" required
-                            style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit;">
-                    </div>
-                </div>
+// ─── INVENTORY ─────────────────────────────────────────────────────────────
+function renderInventory() {
+  const el = document.getElementById('content-area');
+  const inv = S.inventory;
+  const low = inv.filter(i=>(i.quantity||0)<=5).length;
+  el.innerHTML = `<div style="padding:24px;max-width:1100px">
+    <div style="display:flex;gap:14px;margin-bottom:16px">
+      <div class="stat-card" style="flex:1"><div class="stat-label">Product types</div><div class="stat-value">${inv.length}</div></div>
+      <div class="stat-card" style="flex:1"><div class="stat-label">Low stock (≤5)</div><div class="stat-value" style="color:#B3261E">${low}</div></div>
+    </div>
+    <div class="card" style="overflow:hidden">
+      <table><thead><tr><th>Product</th><th>Stock</th><th>Category</th><th>Status</th><th style="text-align:right">Price</th></tr></thead>
+      <tbody>${inv.length===0?'<tr><td colspan="5" style="padding:30px;text-align:center;color:#78716C">No products found.</td></tr>':
+        inv.map(it=>{
+          const qty = it.quantity||it.stock||0;
+          const isLow = qty<=5, isWarn = !isLow && qty<=10;
+          const chipBg = isLow?'#FBEAE9':isWarn?'#FCF3E3':'#E3F2E9';
+          const chipClr = isLow?'#B3261E':isWarn?'#96590A':'#1A7F4E';
+          const stLabel = isLow?'Low stock':isWarn?'Watch':'In stock';
+          const barClr = isLow?'#D64545':isWarn?'#D97706':'#2E9E63';
+          const pct = Math.min(100,Math.round(qty/25*100));
+          return `<tr>
+            <td style="font-weight:600">${it.name||it.product_name||'—'}</td>
+            <td style="width:200px"><div style="display:flex;align-items:center;gap:10px">
+              <div style="flex:1;height:6px;border-radius:99px;background:#F0EBE3;overflow:hidden;max-width:100px"><div style="height:100%;border-radius:99px;background:${barClr};width:${pct}%"></div></div>
+              <span style="font-size:13px;font-weight:600">${qty}</span>
+            </div></td>
+            <td>${it.category||'—'}</td>
+            <td><span class="chip" style="background:${chipBg};color:${chipClr}">${stLabel}</span></td>
+            <td style="text-align:right;font-weight:700">${it.price||it.selling_price ? 'Rs. '+Number(it.price||it.selling_price).toLocaleString() : '—'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody></table>
+    </div>
+  </div>`;
+}
 
-                <div style="margin-bottom:24px;">
-                    <label style="display:block; margin-bottom:8px; font-size:14px; color:var(--text-secondary);">Description</label>
-                    <textarea id="exp-desc" rows="2" placeholder="Describe the logged expense..."
-                        style="width:100%; padding:10px 14px; background:rgba(0,0,0,0.2); border:1px solid var(--border-color); border-radius:var(--radius-md); color:white; font-family:inherit; resize:vertical;"></textarea>
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:12px;">
-                    <button type="button" class="btn" id="cancel-expense-modal"
-                        style="background:transparent; border:1px solid var(--border-color); color:var(--text-primary);">Cancel</button>
-                    <button type="submit" class="btn btn-primary" id="save-expense-btn">Log Expense</button>
-                </div>
-            </form>
+// ─── SETTINGS ──────────────────────────────────────────────────────────────
+function renderSettings() {
+  const el = document.getElementById('content-area');
+  const sections = [
+    { title:'Salon profile', desc:'Name, address and contact info', icon:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>' },
+    { title:'Notifications', desc:'Alerts for new bookings and low stock', icon:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>' },
+    { title:'Business settings', desc:'Currency, tax and working hours', icon:'<circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path>' }
+  ];
+  el.innerHTML = `<div style="padding:24px;max-width:760px">
+    <div class="card" style="overflow:hidden">
+      ${sections.map(s=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;cursor:pointer;border-bottom:1px solid #F3EFE8" onmouseover="this.style.background='#FAF8F4'" onmouseout="this.style.background=''">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:36px;height:36px;border-radius:10px;background:#F0EBE3;color:#57534E;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${s.icon}</svg></div>
+          <div><div style="font-weight:600;font-size:13.5px">${s.title}</div><div style="font-size:12.5px;color:#78716C">${s.desc}</div></div>
         </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A8A29E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg>
+      </div>`).join('')}
     </div>
+    <div style="margin-top:20px;padding:16px;background:#FBEAE9;border:1px solid #F5C9C6;border-radius:12px;font-size:13px;color:#7C1A16">
+      <strong>Danger zone</strong> — <a href="#" onclick="doLogout();return false" style="color:#B3261E;font-weight:600">Sign out</a> from the staff portal.
+    </div>
+  </div>`;
+}
 
-    <script src="js/app.js?v=2"></script>
+// ─── DRAWER ────────────────────────────────────────────────────────────────
+function openDrawer(id) {
+  const a = S.appointments.find(x => String(x.id) === String(id));
+  if (!a) return;
+  S.drawerApptId = id;
+  const status = a.status || 'pending';
+  const idx = STAGES.indexOf(status);
+  const m = STAGE_META[status] || STAGE_META.pending;
+
+  document.getElementById('drawer-id').textContent = '#' + a.id;
+  document.getElementById('drawer-service').textContent = a.service_name || a.service || 'Appointment';
+  document.getElementById('drawer-status-chip').innerHTML = chip(status);
+
+  // Steps
+  document.getElementById('drawer-steps').innerHTML = STAGES.map((sg,i) => {
+    const sm = STAGE_META[sg];
+    return `<div style="flex:1;display:flex;flex-direction:column;gap:5px">
+      <div style="height:5px;border-radius:99px;background:${i<=idx?'#B4530A':'#EDEAE4'}"></div>
+      <span style="font-size:10px;font-weight:600;color:${i<=idx?'#8A3D05':'#A8A29E'};text-transform:uppercase;letter-spacing:0.03em">${sm.label}</span>
+    </div>`;
+  }).join('');
+
+  // Client card
+  const ini = initials(a.client_name || a.customer_name || '');
+  document.getElementById('drawer-client-card').innerHTML = `
+    <div style="width:34px;height:34px;border-radius:99px;background:#EAD9C9;color:#8A3D05;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px">${ini}</div>
+    <div style="flex:1"><div style="font-size:13.5px;font-weight:600">${a.client_name||a.customer_name||'—'}</div>
+    <div style="font-size:12.5px;color:#78716C;font-family:'Spline Sans Mono',monospace">${a.client_phone||'—'}</div></div>`;
+
+  // Details grid
+  document.getElementById('drawer-details-grid').innerHTML = `
+    <div style="border:1px solid #EFEAE2;border-radius:10px;padding:10px 12px">
+      <div style="font-size:11px;color:#A8A29E;font-weight:600;text-transform:uppercase;letter-spacing:0.04em">Date & Time</div>
+      <div style="font-size:13.5px;font-weight:600;margin-top:4px">${a.date||'—'} ${a.time||''}</div>
+    </div>
+    <div style="border:1px solid #EFEAE2;border-radius:10px;padding:10px 12px">
+      <div style="font-size:11px;color:#A8A29E;font-weight:600;text-transform:uppercase;letter-spacing:0.04em">Stylist</div>
+      <div style="font-size:13.5px;font-weight:600;margin-top:4px">${a.staff_name||a.stylist_name||'—'}</div>
+    </div>
+    <div style="border:1px solid #EFEAE2;border-radius:10px;padding:10px 12px">
+      <div style="font-size:11px;color:#A8A29E;font-weight:600;text-transform:uppercase;letter-spacing:0.04em">Price</div>
+      <div style="font-size:16px;font-weight:700;margin-top:2px">${a.price||a.total ? 'Rs. '+Number(a.price||a.total).toLocaleString() : '—'}</div>
+    </div>
+    <div style="border:1px solid #EFEAE2;border-radius:10px;padding:10px 12px">
+      <div style="font-size:11px;color:#A8A29E;font-weight:600;text-transform:uppercase;letter-spacing:0.04em">Duration</div>
+      <div style="font-size:13.5px;font-weight:600;margin-top:4px">${a.duration_mins||a.duration||'—'} min</div>
+    </div>`;
+
+  document.getElementById('drawer-notes').textContent = a.notes || a.description || 'No notes.';
+
+  const nextStage = STAGES[idx+1];
+  const advBtn = document.getElementById('btn-advance-stage');
+  if (nextStage) {
+    advBtn.textContent = 'Move to ' + STAGE_META[nextStage].label;
+    advBtn.onclick = () => advanceAppt(a.id, nextStage);
+  } else {
+    advBtn.textContent = 'Completed ✓';
+    advBtn.onclick = null;
+  }
+  document.getElementById('btn-cancel-appt').onclick = () => advanceAppt(a.id, 'cancelled');
+
+  document.getElementById('drawer-overlay').style.display = '';
+  document.getElementById('appt-drawer').style.display = '';
+}
+
+function closeDrawer() {
+  document.getElementById('drawer-overlay').style.display = 'none';
+  document.getElementById('appt-drawer').style.display = 'none';
+  S.drawerApptId = null;
+}
+
+async function advanceAppt(id, newStatus) {
+  try {
+    await api('appointments_update', 'POST', { id, status: newStatus });
+    const appt = S.appointments.find(a => String(a.id) === String(id));
+    if (appt) appt.status = newStatus;
+    closeDrawer();
+    renderScreen();
+    renderSidebar();
+  } catch(e) { alert('Failed to update appointment.'); }
+}
+
+// ─── NEW APPOINTMENT MODAL ─────────────────────────────────────────────────
+const MODAL_STEPS = ['Client', 'Service & Staff', 'Date & Time'];
+
+function openNewApptModal() {
+  S.modalStep = 0;
+  S.modalData = { client_name:'', client_phone:'', client_email:'', service_id:'', staff_id:'', date:'', time:'', notes:'' };
+  renderModal();
+  document.getElementById('new-appt-modal').style.display = '';
+}
+
+function closeModal() {
+  document.getElementById('new-appt-modal').style.display = 'none';
+}
+
+function renderModal() {
+  const step = S.modalStep;
+  document.getElementById('modal-step-label').textContent = `Step ${step+1} of ${MODAL_STEPS.length} — ${MODAL_STEPS[step]}`;
+  document.getElementById('btn-modal-back').textContent = step > 0 ? 'Back' : 'Cancel';
+  document.getElementById('btn-modal-next').textContent = step === MODAL_STEPS.length-1 ? 'Book Appointment' : 'Continue';
+
+  document.getElementById('modal-step-bars').innerHTML = MODAL_STEPS.map((_,i) =>
+    `<div style="flex:1;height:4px;border-radius:99px;background:${i<=step?'#B4530A':'#EDEAE4'}"></div>`
+  ).join('');
+
+  const body = document.getElementById('modal-body');
+  if (step === 0) {
+    body.innerHTML = `
+      <div><label class="form-label">Full name *</label><input id="m-name" class="form-input" placeholder="Jane Smith" value="${S.modalData.client_name}"></div>
+      <div><label class="form-label">Phone number *</label><input id="m-phone" class="form-input" type="tel" placeholder="03001234567" value="${S.modalData.client_phone}"></div>
+      <div><label class="form-label">Email (optional)</label><input id="m-email" class="form-input" type="email" placeholder="jane@example.com" value="${S.modalData.client_email}"></div>`;
+  } else if (step === 1) {
+    const svcOpts = S.services.map(s=>`<option value="${s.id}" ${S.modalData.service_id==s.id?'selected':''}>${s.name} — Rs.${Number(s.price||0).toLocaleString()}</option>`).join('');
+    const staffOpts = S.staff.map(s=>`<option value="${s.id}" ${S.modalData.staff_id==s.id?'selected':''}>${s.username||s.name||'Staff #'+s.id}</option>`).join('');
+    body.innerHTML = `
+      <div><label class="form-label">Service *</label><select id="m-service" class="form-input"><option value="">Select service…</option>${svcOpts}</select></div>
+      <div><label class="form-label">Stylist *</label><select id="m-staff" class="form-input"><option value="">First available</option>${staffOpts}</select></div>
+      <div><label class="form-label">Notes (optional)</label><textarea id="m-notes" class="form-input" rows="3" placeholder="Any special requests…">${S.modalData.notes}</textarea></div>`;
+  } else {
+    const today = new Date().toISOString().split('T')[0];
+    body.innerHTML = `
+      <div class="form-grid-2">
+        <div><label class="form-label">Date *</label><input id="m-date" class="form-input" type="date" min="${today}" value="${S.modalData.date}"></div>
+        <div><label class="form-label">Time *</label><input id="m-time" class="form-input" type="time" value="${S.modalData.time}"></div>
+      </div>`;
+  }
+}
+
+async function modalNext() {
+  const step = S.modalStep;
+  if (step === 0) {
+    S.modalData.client_name = document.getElementById('m-name').value.trim();
+    S.modalData.client_phone = document.getElementById('m-phone').value.trim();
+    S.modalData.client_email = document.getElementById('m-email').value.trim();
+    if (!S.modalData.client_name || !S.modalData.client_phone) { alert('Name and phone are required.'); return; }
+  } else if (step === 1) {
+    S.modalData.service_id = document.getElementById('m-service').value;
+    S.modalData.staff_id = document.getElementById('m-staff').value;
+    S.modalData.notes = document.getElementById('m-notes').value.trim();
+    if (!S.modalData.service_id) { alert('Please select a service.'); return; }
+    if (!S.modalData.staff_id && S.staff.length > 0) S.modalData.staff_id = S.staff[0].id;
+  } else {
+    S.modalData.date = document.getElementById('m-date').value;
+    S.modalData.time = document.getElementById('m-time').value;
+    if (!S.modalData.date || !S.modalData.time) { alert('Date and time are required.'); return; }
+    // Submit
+    try {
+      const payload = { ...S.modalData, client_type: 'pre-booked' };
+      const res = await api('book_online', 'POST', payload);
+      if (res.error) { alert(res.error); return; }
+      closeModal();
+      await loadScreenData('appointments');
+      renderScreen();
+      renderSidebar();
+      alert('Appointment booked successfully!');
+    } catch(e) { alert('Failed to book appointment.'); }
+    return;
+  }
+  S.modalStep++;
+  renderModal();
+}
+
+function modalBack() {
+  if (S.modalStep === 0) { closeModal(); return; }
+  S.modalStep--;
+  renderModal();
+}
+
+// ─── LOGIN ─────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const user = document.getElementById('login-username').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const errEl = document.getElementById('login-error');
+  errEl.style.display = 'none';
+  if (!user || !pass) { errEl.textContent = 'Please enter username and password.'; errEl.style.display = ''; return; }
+  try {
+    const res = await api('login', 'POST', { username: user, password: pass });
+    if (res.token) {
+      S.token = res.token;
+      S.user = res.user || { username: user, role: res.role || 'staff' };
+      localStorage.setItem('lum_token', S.token);
+      localStorage.setItem('lum_user', JSON.stringify(S.user));
+      showApp();
+    } else {
+      errEl.textContent = res.error || res.message || 'Invalid credentials.';
+      errEl.style.display = '';
+    }
+  } catch(e) {
+    errEl.textContent = 'Could not connect to server. Please try again.';
+    errEl.style.display = '';
+  }
+}
+
+function doLogout() {
+  S.token = ''; S.user = null;
+  localStorage.removeItem('lum_token');
+  localStorage.removeItem('lum_user');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-overlay').style.display = '';
+}
+
+async function showApp() {
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('app').style.display = '';
+
+  // Load services/staff for modal upfront
+  const [sr, stR] = await Promise.all([api('services'), api('staff')]);
+  S.services = Array.isArray(sr) ? sr : (sr.data || sr.services || []);
+  S.staff = Array.isArray(stR) ? stR : (stR.data || stR.staff || []);
+
+  renderSidebar();
+  navigate('dashboard');
+  setupNotifPolling();
+}
+
+// ─── NOTIFICATIONS ─────────────────────────────────────────────────────────
+async function setupNotifPolling() {
+  try {
+    const r = await api('inventory_alerts');
+    const alerts = Array.isArray(r) ? r : (r.data || r.alerts || []);
+    if (alerts.length > 0) {
+      document.getElementById('notif-dot').style.display = '';
+      document.getElementById('notif-list').innerHTML = alerts.slice(0,5).map(a =>
+        `<div style="display:flex;gap:10px;padding:11px 14px;border-bottom:1px solid #F3EFE8">
+          <div style="width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#FBEAE9;color:#B3261E">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+          </div>
+          <div style="flex:1"><div style="font-size:13px;color:#1C1917">${a.name||a.product_name} — ${a.quantity||0} left</div><div style="font-size:11.5px;color:#A8A29E">Low stock alert</div></div>
+        </div>`
+      ).join('');
+    }
+  } catch(e) {}
+}
+
+// ─── WIRE UP ────────────────────────────────────────────────────────────────
+document.getElementById('btn-login').addEventListener('click', doLogin);
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-username').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('btn-logout').addEventListener('click', doLogout);
+document.getElementById('btn-close-drawer').addEventListener('click', closeDrawer);
+document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
+document.getElementById('btn-new-appt').addEventListener('click', openNewApptModal);
+document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+document.getElementById('btn-modal-next').addEventListener('click', modalNext);
+document.getElementById('btn-modal-back').addEventListener('click', modalBack);
+document.getElementById('btn-notif').addEventListener('click', () => {
+  const dd = document.getElementById('notif-dropdown');
+  dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+});
+document.addEventListener('click', e => {
+  const dd = document.getElementById('notif-dropdown');
+  if (!document.getElementById('btn-notif').contains(e.target)) dd.style.display = 'none';
+});
+document.getElementById('search-input').addEventListener('input', e => {
+  S.searchQ = e.target.value;
+  if (S.screen === 'appointments') renderScreen();
+});
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+if (S.token && S.user) {
+  showApp();
+} else {
+  document.getElementById('login-overlay').style.display = '';
+}
+</script>
 </body>
-
 </html>
