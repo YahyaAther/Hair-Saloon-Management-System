@@ -1,0 +1,6 @@
+.git
+*.db
+*.bat
+mariadb-10.11.7-winx64
+start.sh
+node_modules

@@ -108,9 +108,11 @@ class Database {
                 payment_method TEXT NOT NULL, -- cash, digital
                 payment_status TEXT DEFAULT 'paid', -- paid, unpaid
                 total_amount REAL NOT NULL,
+                appointment_id INTEGER NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY(client_id) REFERENCES clients(id),
-                FOREIGN KEY(logged_by) REFERENCES users(id)
+                FOREIGN KEY(logged_by) REFERENCES users(id),
+                FOREIGN KEY(appointment_id) REFERENCES appointments(id)
             );
 
             CREATE TABLE IF NOT EXISTS invoice_items (

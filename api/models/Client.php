@@ -19,8 +19,8 @@ class Client extends Model {
     }
 
     public function findOrCreate($name, $email, $phone) {
-        $stmt = $this->db->prepare("SELECT id FROM clients WHERE (email = :email AND :email != '') OR (phone = :phone AND :phone != '') LIMIT 1");
-        $stmt->execute(['email' => $email, 'phone' => $phone]);
+        $stmt = $this->db->prepare("SELECT id FROM clients WHERE (email = :email AND :email_chk != '') OR (phone = :phone AND :phone_chk != '') LIMIT 1");
+        $stmt->execute(['email' => $email, 'email_chk' => $email, 'phone' => $phone, 'phone_chk' => $phone]);
         $id = $stmt->fetchColumn();
         
         if ($id) {
